@@ -9,14 +9,18 @@ function App() {
   function submitForm(data) {
     return async (e) => {
       e.preventDefault()
-      const query = ``
+      const query = `mutation {
+  addPost(inputPost:{title:"${data.title}",content:"${data.content}",authorId:"2"}){
+    title
+  }
+}`
 
       const res = await fetch("http://localhost:4000/graphql", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(),
+        body: JSON.stringify({ query }),
       })
 
       const resData = await res.json()
@@ -34,7 +38,16 @@ function App() {
     const controller = new AbortController()
 
     async function getPosts() {
-      const query = ``
+      const query = `{
+                posts{
+                  id
+                  title
+                  content
+                  author{
+                    name
+                  }
+                }
+              }`
 
       const res = await fetch("http://localhost:4000/graphql", {
         method: "POST",
@@ -42,7 +55,7 @@ function App() {
           "Content-Type": "application/json",
         },
         signal: controller.signal,
-        body: JSON.stringify(),
+        body: JSON.stringify({ query }),
       })
 
       const { data } = await res.json()
